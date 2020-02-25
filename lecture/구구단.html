@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const e = React.createElement; //태그를 만들어주는 함수
+      //클래스 하나가 하나의 컴포넌트
+      class GuGuDan extends React.Component{
+        constructor(props){
+          super(props);
+          this.state={ //상태의 첫번째 값
+            first:Math.ceil(Math.random() * 9),
+            second:Math.ceil(Math.random() * 9),
+            value:'',
+            result:'',
+          }
+        }
+        onChange = (e) => {
+          this.setState({value:e.target.value});
+        };
+
+        onSubmit = (e) => {
+          e.preventDefault();
+          if(parseInt(this.state.value) === this.state.first * this.state.second){
+            this.setState((prevState=>{
+              return {
+                result: this.state.value + '정답',
+                first: Math.ceil(Math.random() * 9),
+                second: Math.ceil(Math.random() * 9),
+                value: '',
+              }
+            }));
+          } else{
+            this.setState({
+              result:'땡',
+              value:'',
+            });
+            this.input.focus();
+          }
+        };
+
+        input;
+
+        render(){
+          console.log('렌더링');
+          return (
+          //태그사이에 컨텐츠에 중괄호를 넣으면 자바스크립트를 쓸 수 있음
+            <React.Fragment>
+              <div>
+                {this.state.first} 곱하기 {this.state.second} 는?
+              </div>
+              <form onSubmit={this.onSubmit}>
+                <input ref={(c)=>{this.input=c}}type="number" value={this.state.value} onChange={this.onChange} />
+                <button>입력</button>
+              </form>
+              <div>
+                 {this.state.result}
+              </div>
+            </React.Fragment>
+          );
+        }
+      }
+    </script>
+  <script type="text/babel">
+    ReactDOM.render(<GuGuDan/>, document.querySelector('#root'));
+      //ReactDOM.render(e(LikeButton), document.querySelector('#root')); <!--root안에다 버튼을 그린다-->
+    </script>
+</body>
+
+</html>
