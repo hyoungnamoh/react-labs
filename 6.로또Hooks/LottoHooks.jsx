@@ -13,7 +13,6 @@ function getWinNumbers() {
   return [...winNumbers, bounsNumber];
 }
 
-
 const LottoHooks = () => {
   const lottolNumbers = useMemo(() => getWinNumbers(), []);
   const [winNumbers, setWinNumbers] = useState(lottolNumbers);
@@ -21,6 +20,7 @@ const LottoHooks = () => {
   const [bonus, setBonus] = useState(null);
   const [redo, setRedo] = useState(false);
   const timeouts=useRef([]);
+
 
 
 

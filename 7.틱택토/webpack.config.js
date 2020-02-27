@@ -1,7 +1,7 @@
 const path = require('path');
 //process.env.NODE_ENV='production'; //배포용일 때 설정
 module.exports = {
-    name: 'LootoHooks-setting',
+    name: 'Tictactoe-setting',
     mode: 'development', //실 서비스: production
     devtool: 'eval', //hidden-souace-map
     resolve: { //엔트리에서 뒤에 확장자 안붙여줘도 알아서 찾아가게끔
