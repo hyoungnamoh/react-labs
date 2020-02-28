@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {memo} from 'react';
 import Tr from './Tr';
 
-const Table = ({onClick, tableData}) => {
+const Table = memo(({onClick, tableData, dispatch}) => {
   return (
     <table >
-      {Array(tableData.length).fill().map((tr, i) => (<Tr rowIndex={i} rowData={tableData[i]}/>))} {/*i가 몇번째 줄인지 나타냄*/}
+      {Array(tableData.length).fill().map((tr, i) => (<Tr key = {i} rowIndex={i} rowData={tableData[i]} dispatch = {dispatch}/>))} {/*i가 몇번째 줄인지 나타냄*/}
     </table>
   )
-}
+});
 export default Table;
