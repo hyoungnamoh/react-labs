@@ -1,6 +1,6 @@
-import React, {useContext, useCallback} from 'react';
+import React, {useContext, useCallback, memo, useMemo} from 'react';
 import {
-  CODE, TableContext, OPEN_CELL, CLICK_MINE, FLAG_CELL, QUESTION_CELL, NORMALIZE_CELL
+  CODE, TableContext, OPEN_CELL, CLICK_MINE, FLAG_CELL, QUESTION_CELL, NORMALIZE_CELL, INCREMENT_TIMER
 } from './MineSearch';
 
 const getTdStyle = (code) => {
@@ -32,6 +32,7 @@ const getTdStyle = (code) => {
 };
 
 const getTdText = (code) => {
+  console.log('tdtext');
   switch (code) {
     case CODE.NORMAL:
       return '';
@@ -46,12 +47,13 @@ const getTdText = (code) => {
     case CODE.QUESTION_MINE:
       return '?';
     default:
-      return code;
+      return code === 0 ? '' : code;
   }
 
 };
 
-const Td = ({rowIndex, cellIndex}) => {
+const Td = memo(({rowIndex, cellIndex}) => {
+  console.log('td');
   const {tableData, dispatch, halted} = useContext(TableContext);
   const onClickTd = useCallback(() => {
     if(halted){
@@ -97,15 +99,20 @@ const Td = ({rowIndex, cellIndex}) => {
       default: return;
     }
   }, [tableData[rowIndex][cellIndex], halted]);
+  return <TdComp onClickTd ={onClickTd} onRightClickTd = {onRightClickTd} data={tableData[rowIndex][cellIndex]}/>
+});
+
+ //컴포넌트를 분리해서 함수는 호출 되지만 실제 컴포넌트는 한번만 호출되게 할 수 있음(하나로 해서 return부에 memo를 써도 됨)
+const TdComp = memo(({onClickTd, onRightClickTd, data}) => {
   return (
     <td
-      style = {getTdStyle(tableData[rowIndex][cellIndex])}
+      style = {getTdStyle(data)}
       onClick = {onClickTd}
       onContextMenu = {onRightClickTd}
     >
-      {getTdText(tableData[rowIndex][cellIndex])}
+      {getTdText(data)}
     </td>
   )
-}
+});
 
 export default Td;
