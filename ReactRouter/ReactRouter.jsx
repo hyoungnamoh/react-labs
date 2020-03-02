@@ -3,7 +3,7 @@ import {BrowserRouter, HashRouter, Route, Link} from 'react-router-dom';
 import NumberBaseBall from '../3.숫자야구/NumberBaseBall';
 import RSP from '../5.가위바위보/RSP';
 import Lotto from '../6.로또/Lotto';
-import GameMather from './GameMather';
+import GameMather from "./GameMather";
 
 
 const ReactRouter = () => {

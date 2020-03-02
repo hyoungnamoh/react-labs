@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
+import Lotto from "../6.로또/Lotto";
+import RSP from "../5.가위바위보/RSP";
+import NumberBaseball from "../3.숫자야구/NumberBaseball";
 
 class GameMather extends Component{
   render() {
@@ -15,8 +18,17 @@ class GameMather extends Component{
 
     연결되지 않은 컴포넌트에서 얘네를 사용하고 싶으면 withRouter로 export부분 감싸주면 됨
     */
+    if(this.props.match.params.name === 'number-baseball'){
+        return <NumberBaseball/>
+    } else if(this.props.match.params.name === 'rock-scissors-paper'){
+        return <RSP/>
+    } else if(this.props.match.params.name === 'lotto-generator'){
+        return <Lotto/>
+    }
     return (
-      <div>게임매쳐</div>
+        <diV>
+            일치하는 게임이 없습니다.
+        </diV>
     );
   }
 }
