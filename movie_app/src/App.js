@@ -1,60 +1,22 @@
-import React from 'react';
-import axios from 'axios';
-import Movie from "./Movie";
-import "./Movie.css";
-import "./App.css";
+import React from "react";
+import {HashRouter, Route} from "react-router-dom";
+import About from "./routes/About";
+import Home from "./routes/Home";
+import Navigation from "./routes/Navigation";
+import Detail from "./routes/Detail";
 
-class App extends React.Component{
-  state={
-    isLoading: true,
-    movies: [],
-  };
 
-  getMovies = async () => { //이 함수는 비동기 함수임을 알려줌 그리고 내부에서
-    //어떤게 비동기 함수인지 알려주고 걔가 끝날때까지 기다리라고함
-    const {
-      data:{
-        data:{ movies }
-      }
-    } = await axios.get("https://yts.mx/api/v2/list_movies.json");
-    this.setState({
-      movies,
-      isLoading:false,
-    });
-    console.log(movies);
-  }
 
-  componentDidMount() {
-    this.getMovies();
-  }
-  render() {
-    const {isLoading, movies} = this.state;
-    return (
-        <>
-          <section className="container">
-            {isLoading ? (
-                <div className="loader">
-                  <span className="loader_text">Loading...</span>
-                </div>
-            ) : (
-                <div className="movies">
-                  {movies.map(movie => (
-                      <Movie
-                          key={movie.id}
-                          title={movie.title}
-                          summary={movie.summary}
-                          poster={movie.medium_cover_image}
-                          id={movie.id}
-                          year={movie.year}
-                          genres={movie.genres}
-                      />
-                  ))}
-                </div>
-            )}
-          </section>
-        </>
-    )
-  }
+const App = () => {
+  return(
+      <HashRouter>
+          <Navigation/>
+          <Route path="/" exact={true} component={Home} />
+          <Route path="/about" component={About} />
+          <Route path="/movie/:id" component={Detail} />
+      </HashRouter>
+  )
 }
+
 
 export default App;

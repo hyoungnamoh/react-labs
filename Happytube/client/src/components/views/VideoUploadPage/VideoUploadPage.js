@@ -1,78 +1,139 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react'
 import { Typography, Button, Form, message, Input, Icon } from 'antd';
-import Dropzone from "react-dropzone";
-import axios from "axios";
+import Dropzone from 'react-dropzone';
+import axios from 'axios';
+import { useSelector } from "react-redux";
 
-const {TextArea} = Input;
 const { Title } = Typography;
+const { TextArea } = Input;
 
-const PrivateOptions = [
-    {value: 0, label: "Private"},
-    {value: 1, label: "Public"},
-];
-const CategoryOptions = [
-    {value: 0, label: "Film & Animation"},
-    {value: 1, label: "Auto & Vehicles"},
-    {value: 2, label: "Music"},
-    {value: 3, label: "Pets & Animations"},
-];
-function VideoUploadPage(props) {
+const Private = [
+    { value: 0, label: 'Private' },
+    { value: 1, label: 'Public' }
+]
 
-    const [VideoTitle, setVideoTitle] = useState('');
-    const [Description, setDescription] = useState('');
-    const [Private, setPrivate] = useState('');
-    const [Category, setCategory] = useState('Film & Animation');
+const Catogory = [
+    { value: 0, label: "Film & Animation" },
+    { value: 0, label: "Autos & Vehicles" },
+    { value: 0, label: "Music" },
+    { value: 0, label: "Pets & Animals" },
+    { value: 0, label: "Sports" },
+]
 
-    const onTitleChange = (e) => {
-        setVideoTitle(e.currentTarget.value);
+function UploadVideoPage(props) {
+    const user = useSelector(state => state.user);
+
+    const [title, setTitle] = useState("");
+    const [Description, setDescription] = useState("");
+    const [privacy, setPrivacy] = useState(0)
+    const [Categories, setCategories] = useState("Film & Animation")
+    const [FilePath, setFilePath] = useState("")
+    const [Duration, setDuration] = useState("")
+    const [Thumbnail, setThumbnail] = useState("")
+
+
+    const handleChangeTitle = (event) => {
+        setTitle(event.currentTarget.value)
     }
-    const onDescriptionChange = (e) => {
-        setDescription(e.currentTarget.value);
+
+    const handleChangeDecsription = (event) => {
+        console.log(event.currentTarget.value)
+
+        setDescription(event.currentTarget.value)
     }
-    const onCategoryChange = (e) => {
-        setCategory(e.currentTarget.value);
+
+    const handleChangeOne = (event) => {
+        setPrivacy(event.currentTarget.value)
     }
-    const onPrivateChange = (e) => {
-        setPrivate(e.currentTarget.value);
+
+    const handleChangeTwo = (event) => {
+        setCategories(event.currentTarget.value)
     }
-    const onDrop = (files) => {
-        let formData = new FormData();
-        const config = { //파일 보낼 때 컨텐트 타입을 설정해서 보내줘야함
-            header: {'content-type': 'multipart/form-data'}
+
+    const onSubmit = (event) => {
+
+        event.preventDefault();
+
+        if (user.userData && !user.userData.isAuth) {
+            return alert('Please Log in First')
         }
-        formData.append("file", files[0]);
-        console.log(files);
+
+        if (title === "" || Description === "" ||
+            Categories === "" || FilePath === "" ||
+            Duration === "" || Thumbnail === "") {
+            return alert('Please first fill all the fields')
+        }
+
+        const variables = {
+            writer: user.userData._id,
+            title: title,
+            description: Description,
+            privacy: privacy,
+            filePath: FilePath,
+            category: Categories,
+            duration: Duration,
+            thumbnail: Thumbnail
+        }
+
+        axios.post('/api/video/uploadVideo', variables)
+            .then(response => {
+                if (response.data.success) {
+                    alert('video Uploaded Successfully')
+                    props.history.push('/')
+                } else {
+                    alert('Failed to upload video')
+                }
+            })
+
+    }
+
+    const onDrop = (files) => {
+
+        let formData = new FormData();
+        const config = {
+            header: { 'content-type': 'multipart/form-data' }
+        }
+        console.log(files)
+        formData.append("file", files[0])
+
         axios.post('/api/video/uploadfiles', formData, config)
             .then(response => {
-                if(response.data.success){
-                    console.log(response.data);
-                    let variable= {
-                        url: response.data.url,
-                        fileName: response.data.filename
-                    }
-                    axios.post('/pai/video/thumbnail', variable)
-                        .then(response => {
-                            if(response.data.success){
+                if (response.data.success) {
 
-                            } else{
-                                alert('썸네일 생성 실패');
+                    let variable = {
+                        filePath: response.data.filePath,
+                        fileName: response.data.fileName
+                    }
+                    setFilePath(response.data.filePath)
+
+                    //gerenate thumbnail with this filepath ! 
+
+                    axios.post('/api/video/thumbnail', variable)
+                        .then(response => {
+                            if (response.data.success) {
+                                setDuration(response.data.fileDuration)
+                                setThumbnail(response.data.thumbsFilePath)
+                            } else {
+                                alert('Failed to make the thumbnails');
                             }
                         })
-                }else{
-                    alert('실패');
+
+
+                } else {
+                    alert('failed to save the video in server')
                 }
-            });
+            })
+
     }
 
     return (
-        <div style={{ maxWidth: '700px', margin: '2rem auto'}}>
-            <div style={{textAlign: 'center', marginBottom: '2rem'}}>
-                <Title levle={2}>Upload Video</Title>
+        <div style={{ maxWidth: '700px', margin: '2rem auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                <Title level={2} > Upload Video</Title>
             </div>
 
-            <Form onSubmit>
-                <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                    {/*Drop zone*/}
+            <Form onSubmit={onSubmit}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Dropzone
                         onDrop={onDrop}
                         multiple={false}
@@ -88,59 +149,48 @@ function VideoUploadPage(props) {
                         )}
                     </Dropzone>
 
-                    {/*Thumbnail*/}
+                    {Thumbnail !== "" &&
                     <div>
-                        <img src alt/>
+                        <img src={`http://localhost:5000/${Thumbnail}`} alt="haha" />
                     </div>
+                    }
                 </div>
-                <br/>
-                <br/>
-                <Input
-                    onChange
-                    value/>
 
-                <br/>
-                <br/>
-
+                <br /><br />
                 <label>Title</label>
-                <br/>
-                <input
-                    onChange={onTitleChange}
-                    value={VideoTitle}
+                <Input
+                    onChange={handleChangeTitle}
+                    value={title}
                 />
-                <br/>
-                <br/>
-
+                <br /><br />
                 <label>Description</label>
-                <br/>
                 <TextArea
-                    onChange={onDescriptionChange}
+                    onChange={handleChangeDecsription}
                     value={Description}
                 />
-                <br/>
-                <br/>
+                <br /><br />
 
-                <select onChange={onPrivateChange}>
-                    {PrivateOptions.map((item, index) => (
+                <select onChange={handleChangeOne}>
+                    {Private.map((item, index) => (
                         <option key={index} value={item.value}>{item.label}</option>
                     ))}
                 </select>
-                <br/>
-                <br/>
-                <select onChange={onCategoryChange}>
-                    {CategoryOptions.map((item, index) => (
-                        <option key={index} value={item.value}>{item.label}</option>
-                    ))}
+                <br /><br />
 
+                <select onChange={handleChangeTwo}>
+                    {Catogory.map((item, index) => (
+                        <option key={index} value={item.label}>{item.label}</option>
+                    ))}
                 </select>
-                <br/>
-                <br/>
-                <Button type="primary" size="large" onClick>
+                <br /><br />
+
+                <Button type="primary" size="large" onClick={onSubmit}>
                     Submit
                 </Button>
+
             </Form>
         </div>
-    );
-};
+    )
+}
 
-export default VideoUploadPage;
+export default UploadVideoPage

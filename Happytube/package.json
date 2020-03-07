@@ -32,5 +32,10 @@
   "devDependencies": {
     "concurrently": "^4.1.0",
     "nodemon": "^1.19.1"
+  },
+  "devServer": {
+    "proxy": {
+      "*": "http://[::1]:8825"
+    }
   }
 }
