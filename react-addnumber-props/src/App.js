@@ -4,15 +4,22 @@ import AddNumberRoot from "./components/AddNumberRoot";
 import DisplayNumberRoot from "./components/DisplayNumberRoot";
 
 
-
-function App() {
-  return (
-    <div className="App">
-      Hello World!
-        <AddNumberRoot/>
-        <DisplayNumberRoot/>
-    </div>
-  );
+class App extends Component{
+    state = {
+        number:0
+    }
+    render() {
+        return (
+            <div className="App">
+              Hello World!
+              <AddNumberRoot onClick={(size) => {
+                  console.log('click Addnum' + this.state.number, size);
+                  this.setState({number: this.state.number + size});
+              }}/>
+              <DisplayNumberRoot number={this.state.number}/>
+            </div>
+        );
+    }
 }
 
 export default App;
