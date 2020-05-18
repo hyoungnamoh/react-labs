@@ -9,11 +9,8 @@ const mapReduxStateToReactProps = (state) => {
     }
 }
 
-const mapReduxDispatchToReactProps = () => {
-    return{}
-}
 //connect를 실행하면 리턴값이 함수, 그 함수를 또 실행, 고차함수
-export default connect(mapReduxStateToReactProps, mapReduxDispatchToReactProps)(DisplayNumber);
+export default connect(mapReduxStateToReactProps)(DisplayNumber);
 
 // export default class extends Component{
 //     state= {
