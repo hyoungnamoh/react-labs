@@ -56,8 +56,7 @@ class Lotto extends Component {
 
   componentDidUpdate(prevProps, prevState){
     console.log('componentDidUpdate');
-    if(this.state.winBalls.length === 0) { //온클릭 눌렀을 떼 바뀌는 요소를 비교하면 됨
-
+    if(this.state.winBalls.length === 0) { //온클릭 눌렀을 때 바뀌는 요소를 비교하면 됨
       this.runTimeouts();
     }
   }
