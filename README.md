@@ -1,2 +1,2 @@
-# nextjs-tutorial
-nextjs를 공부해봅시다
+# react-labs
+리액트 놀이터
