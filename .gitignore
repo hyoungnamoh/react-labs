@@ -1,3 +1,4 @@
 nextjs/node_modules/
 nextjs/ssr-native/node_modules/
 nextjs/nextjs-example/node_modules/
+nextjs/nextjs-example/.next/
