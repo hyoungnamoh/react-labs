@@ -6,16 +6,14 @@ class App extends Component {
     console.log(props);
     super(props);
     this.state = {
-      text: 'asd',
+      text: 'asdasd'
     }
   }
-
   componentDidMount() {
     this.setState({
-      text: 'Client Loaded',
-    });
+      text: 'Client Loaded'
+    })
   }
-
   render() {
     return (
       <div>
@@ -23,6 +21,8 @@ class App extends Component {
       </div>
     );
   }
+
+
 }
 
 export default App;
